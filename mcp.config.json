@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "gno": {
+      "url": "https://mcp.gno.dev",
+      "type": "sse",
+      "description": "Gno.land MCP Server providing live access to Gno blockchain, realm evaluation, and testnet query tools"
+    },
+    "veripulse-auditor": {
+      "command": "node",
+      "args": ["agent/dist/index.js"],
+      "env": {
+        "GNO_RPC_URL": "https://rpc.onyx.gno.land:443",
+        "VERIPULSE_REALM_PKG": "gno.land/r/g1j32d7wan33mn2jc0xzvdthxhejhj024gdzjxmy/veripulse"
+      },
+      "description": "VeriPulse Deterministic AI Auditor Service MCP Server"
+    }
+  }
+}
