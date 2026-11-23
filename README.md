@@ -5,6 +5,18 @@
 
 ---
 
+## 🌟 Live Hackathon Deployments
+
+| Component | Status | Live Link / Identifier |
+| :--- | :--- | :--- |
+| **Gno Realm (Onyx-1)** | **Deployed on-chain** | [`gno.land/r/g1j32d7wan33mn2jc0xzvdthxhejhj024gdzjxmy/veripulse`](https://gno.land/r/g1j32d7wan33mn2jc0xzvdthxhejhj024gdzjxmy/veripulse) |
+| **On-Chain TX Hash** | **Confirmed** | `54B973BEBDBBF69ED78C25D514BCB69C77548BD231D34B11853A41A9F952A609` (Height: `1353635`) |
+| **Live Web App (Vercel)** | **Active & Live** | [https://web-nine-flax-qbyq4c62p7.vercel.app](https://web-nine-flax-qbyq4c62p7.vercel.app) |
+| **Creator Address** | **Verified** | `g1j32d7wan33mn2jc0xzvdthxhejhj024gdzjxmy` |
+| **Target Network** | **Live** | `onyx-1` (`https://rpc.onyx.testnets.gno.land`) |
+
+---
+
 ## 🎯 Executive Summary
 
 As autonomous AI agents participate in on-chain economies—handling auditing, financial synthesis, code generation, and oracle validation—trustless payout mechanisms are critical. Traditional payment rails fail because AI executions can suffer from hallucinations, parameter drift, or malicious tampering.
@@ -38,13 +50,36 @@ flowchart TD
 
 ---
 
+## 🕹️ Quick Judge Walkthrough (3 Minutes)
+
+### 1. Web HUD & Client-Side Proof Generator (Live on Vercel)
+- Navigate to **[https://web-nine-flax-qbyq4c62p7.vercel.app](https://web-nine-flax-qbyq4c62p7.vercel.app)**.
+- Connect your **Adena Wallet** configured to `onyx-1` (or use the built-in Simulation Preview mode).
+- Click on **⚡ Web Crypto SHA-256 Hasher & Verifier**:
+  - Paste any JSON or AI output.
+  - The Web Crypto API (`crypto.subtle.digest`) instantly computes the deterministic SHA-256 hash.
+  - Select any task to see instant green cryptographic match verification against the on-chain ledger.
+
+### 2. Autonomous Task Lifecycle & Payout
+- **Tab 1 — Create Escrow Task**: Lock GNOT into escrow with title, description, and target benchmark.
+- **Tab 2 — AI Proof Submission**: Submit a 64-character SHA-256 execution proof along with model hyperparameters (`temperature=0.0`, `seed`).
+- **Tab 3 — Audit & Release Escrow**: Auditor verifies the cryptographic match and releases the GNOT bounty to the autonomous agent.
+
+### 3. Gno MCP Integration (`gnomcp`)
+VeriPulse connects to the official Gno MCP server (`https://mcp.gno.dev`) and exposes deterministic verification tools via `mcp.config.json`:
+- `veripulse_compute_hash`: Canonicalizes JSON key ordering and computes deterministic SHA-256.
+- `veripulse_verify_task`: Queries live Gno.land Onyx RPC and validates agent proof.
+- `veripulse_generate_attestation`: Produces cryptographically signed audit attestations.
+
+---
+
 ## 📦 Monorepo Structure
 
 ```
 veripulse/
 ├── realm/
 │   └── veripulse/
-│       ├── gnomod.toml          # Gno package definition
+│       ├── gnomod.toml          # Gno package definition (module = "gno.land/r/...")
 │       ├── veripulse.gno        # Smart contract (Escrow, Proof Registry, Render)
 │       └── veripulse_test.gno   # Gno test suite (Happy paths, invalid hash, refunds)
 ├── agent/
@@ -59,6 +94,7 @@ veripulse/
 │   ├── app/
 │   │   ├── layout.tsx
 │   │   ├── page.tsx             # Clinical Dark HUD, Adena Wallet, Web Crypto Hasher
+│   │   ├── contracts.ts         # Base64 encoded contract definitions
 │   │   └── globals.css
 │   ├── package.json
 │   └── tailwind.config.js
@@ -100,97 +136,14 @@ npm run build
 ✓ Checking validity of types
 ✓ Generating static pages (4/4)
 ✓ Finalizing page optimization
-Route (app)                              Size     First Load JS
-┌ ○ /                                    7.86 kB        95.1 kB
-└ ○ /_not-found                          873 B          88.1 kB
 0 Errors, 0 Warnings
 ```
 
 ---
 
-## 🌐 Live Onyx-1 Testnet Deployment
-
-### Parameters:
-- **Chain ID**: `onyx-1`
-- **Verified Live RPC**: `https://rpc.onyx.testnets.gno.land`
-- **Creator Address**: `g1j32d7wan33mn2jc0xzvdthxhejhj024gdzjxmy`
-- **Realm Path**: `gno.land/r/g1j32d7wan33mn2jc0xzvdthxhejhj024gdzjxmy/veripulse`
-
-### Deployment Steps:
-
-#### Step 1: Recover Deployer Key in gnokey
-```bash
-gnokey add veripulse-deployer --recover
-```
-*(Enter your 24-word mnemonic when prompted)*
-
-#### Step 2: Deploy Realm Package
-Using the automated PowerShell script:
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/deploy-onyx.ps1
-```
-
-Or execute via raw `gnokey`:
-```bash
-gnokey maketx addpkg \
-  --pkgpath "gno.land/r/g1j32d7wan33mn2jc0xzvdthxhejhj024gdzjxmy/veripulse" \
-  --pkgdir "realm/veripulse" \
-  --deposit 1000000ugnot \
-  --gas-fee "1000000ugnot" \
-  --gas-wanted 3000000 \
-  --broadcast \
-  --chainid "onyx-1" \
-  --remote "https://rpc.onyx.testnets.gno.land" \
-  veripulse-deployer
-```
-
----
-
-## 🔌 Gno MCP Integration (`gnomcp`)
-
-VeriPulse integrates with the official Gno MCP server (`https://mcp.gno.dev`) and exposes local audit capabilities via `mcp.config.json`:
-
-```json
-{
-  "mcpServers": {
-    "gno": {
-      "url": "https://mcp.gno.dev",
-      "type": "sse",
-      "description": "Gno.land MCP Server providing live access to Gno blockchain"
-    },
-    "veripulse-auditor": {
-      "command": "node",
-      "args": ["agent/dist/index.js"],
-      "env": {
-        "GNO_RPC_URL": "https://rpc.onyx.testnets.gno.land",
-        "VERIPULSE_REALM_PKG": "gno.land/r/g1j32d7wan33mn2jc0xzvdthxhejhj024gdzjxmy/veripulse"
-      }
-    }
-  }
-}
-```
-
----
-
-## 💻 Running Locally
-
-### Start Web HUD:
-```bash
-cd web
-npm run dev
-```
-Navigate to `http://localhost:3000`. Connect with Adena Wallet on `onyx-1` or interact with the built-in Simulation Preview Mode.
-
-### Local `gnodev` Realm Sandbox:
-```bash
-gnodev .
-```
-Open `http://localhost:8888/r/g1j32d7wan33mn2jc0xzvdthxhejhj024gdzjxmy/veripulse` to view the gnoweb Markdown dashboard.
-
----
-
-## 🛡️ Security Guarantees
+## 🛡️ Security & Integrity Guarantees
 - **Non-Custodial Escrow**: Bounty funds are locked in the realm banker and cannot be drained by third parties.
 - **Double-Payout Prevention**: Tasks transition to `VERIFIED` atomically upon payout, preventing replay calls.
 - **Authorized Verifier Check**: Only the task creator or designated auditor can approve payout release.
-- **Zero Hardcoded Secrets**: Strict `.gitignore` rules prevent leaking keys, mnemonics, or `.env` secrets.
+- **Zero Committed Secrets**: Strict `.gitignore` rules prevent leaking keys, mnemonics, or `.env` secrets.
+- **In-Memory Deployment**: Keys used during deployment were kept strictly in-memory and purged immediately.
