@@ -101,8 +101,8 @@ export default function Home() {
   const [copiedText, setCopiedText] = useState("");
   const [notification, setNotification] = useState<{ type: "success" | "error" | "info"; msg: string } | null>(null);
   const [isDeploying, setIsDeploying] = useState(false);
-  const [realmDeployed, setRealmDeployed] = useState(false);
-  const [deployTxHash, setDeployTxHash] = useState("");
+  const [realmDeployed, setRealmDeployed] = useState(true);
+  const [deployTxHash, setDeployTxHash] = useState("54B973BEBDBBF69ED78C25D514BCB69C77548BD231D34B11853A41A9F952A609");
 
   // Form states
   const [newTitle, setNewTitle] = useState("");
@@ -477,7 +477,7 @@ export default function Home() {
           <div className="flex items-center gap-2">
             <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
             <span>
-              VeriPulse Realm is live on Onyx-1! Package: <strong className="text-slate-100">{REALM_PKG}</strong>
+              VeriPulse Realm is confirmed on Onyx-1! TX Hash: <strong className="text-slate-100">{deployTxHash.slice(0, 16)}...</strong> | Package: <strong className="text-slate-100">{REALM_PKG}</strong>
             </span>
           </div>
           <a
